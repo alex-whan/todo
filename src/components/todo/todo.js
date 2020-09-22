@@ -85,7 +85,6 @@ function ToDo(props) {
     <>
       <header>
         <Navbar bg="primary" variant="dark">
-          <Navbar.Brand href="#home"></Navbar.Brand>
           <Nav className="mr-auto">
             <Nav.Link href="#home">Home</Nav.Link>
           </Nav>
@@ -99,8 +98,8 @@ function ToDo(props) {
             <Navbar bg="dark" variant="dark">
               <Nav className="mr-auto">
                 <Navbar.Brand>
-                  There are {list.filter(item => !item.complete).length} Items
-                  To Complete
+                  To Do List Manager (
+                  {list.filter(item => !item.complete).length})
                 </Navbar.Brand>
               </Nav>
             </Navbar>
@@ -108,12 +107,12 @@ function ToDo(props) {
         </Row>
 
         <Row>
-          <Col>
+          <Col md={4}>
             <div>
               <TodoForm handleSubmit={addItem} />
             </div>
           </Col>
-          <Col>
+          <Col md={8}>
             <div>
               <TodoList list={list} handleComplete={toggleComplete} />
             </div>

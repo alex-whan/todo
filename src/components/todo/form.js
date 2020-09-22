@@ -18,24 +18,46 @@ function TodoForm(props) {
   };
 
   return (
-    <Form>
-      <Form.Group controlId="formBasicEmail">
-        <Form.Label>Email address</Form.Label>
-        <Form.Control type="email" placeholder="Enter email" />
-        <Form.Text className="text-muted">
-          We'll never share your email with anyone else.
-        </Form.Text>
-      </Form.Group>
+    <Card>
+      <Card.Body>
+        <Form onSubmit={handleSubmit}>
+          <Form.Group controlId="formToDoItem">
+            <Form.Label>To Do Item</Form.Label>
+            <Form.Control
+              type="text"
+              name="text"
+              placeholder="Item Details"
+              onChange={handleInputChange}
+            />
+          </Form.Group>
 
-      <Form.Group controlId="formDifficulty">
-        <Form.Label>Difficulty</Form.Label>
-        <Form.Control type="range" min={0} max={10} />
-      </Form.Group>
+          <Form.Group controlId="formAssignee">
+            <Form.Label>Assigned To</Form.Label>
+            <Form.Control
+              type="text"
+              name="assignee"
+              placeholder="Assignee Name"
+              onChange={handleInputChange}
+            />
+          </Form.Group>
 
-      <Button variant="primary" type="submit">
-        Submit
-      </Button>
-    </Form>
+          <Form.Group controlId="formDifficulty">
+            <Form.Label>Difficulty</Form.Label>
+            <Form.Control
+              type="range"
+              name="difficulty"
+              min={0}
+              max={10}
+              onChange={handleInputChange}
+            />
+          </Form.Group>
+
+          <Button variant="primary" type="submit">
+            Submit
+          </Button>
+        </Form>
+      </Card.Body>
+    </Card>
   );
 
   /*return (
