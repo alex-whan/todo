@@ -51,14 +51,13 @@ function ToDo(props) {
 
   useEffect(() => {
     let listLength = list.filter(item => !item.complete).length;
-    document.title = listLength;
-    console.log('LIST LENGTH:', listLength);
+    document.title = `To Do List: ${listLength}`;
   }, [list]);
 
   const addItem = item => {
     item._id = Math.random();
     item.complete = false;
-    setList({ list: [...list, item] });
+    setList([...list, item]);
   };
 
   const toggleComplete = id => {
