@@ -1,6 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import TodoForm from './form.js';
 import TodoList from './list.js';
+import Navbar from 'react-bootstrap/Navbar';
+import Nav from 'react-bootstrap/Nav';
+import Container from 'react-bootstrap/Container';
+import Row from 'react-bootstrap/Row';
+import Col from 'react-bootstrap/Col';
 
 import './todo.scss';
 
@@ -72,24 +77,49 @@ function ToDo(props) {
     }
   };
 
+  // It's common to put the entire "main" part of your site in a component called "container" (in 'Layout' section of docs)
+  // These fit into a GRID SYSTEM (and Bootstrap even links to CSS-Tricks flexbox) - i.e. will use Rows and Columns
+  // CONTAINERS are meant to be populated with ROWS, and ROWS are meant to be populated with COLUMNS
+
   return (
     <>
       <header>
-        <h2>
-          There are {list.filter(item => !item.complete).length} Items To
-          Complete
-        </h2>
+        <Navbar bg="primary" variant="dark">
+          <Navbar.Brand href="#home"></Navbar.Brand>
+          <Nav className="mr-auto">
+            <Nav.Link href="#home">Home</Nav.Link>
+          </Nav>
+        </Navbar>
       </header>
 
-      <section className="todo">
-        <div>
-          <TodoForm handleSubmit={addItem} />
-        </div>
+      <Container>
+        <Row>
+          <Col>
+            {/* <section className="todo"> */}
+            <Navbar bg="dark" variant="dark">
+              <Nav className="mr-auto">
+                <Navbar.Brand>
+                  There are {list.filter(item => !item.complete).length} Items
+                  To Complete
+                </Navbar.Brand>
+              </Nav>
+            </Navbar>
+          </Col>
+        </Row>
 
-        <div>
-          <TodoList list={list} handleComplete={toggleComplete} />
-        </div>
-      </section>
+        <Row>
+          <Col>
+            <div>
+              <TodoForm handleSubmit={addItem} />
+            </div>
+          </Col>
+          <Col>
+            <div>
+              <TodoList list={list} handleComplete={toggleComplete} />
+            </div>
+          </Col>
+        </Row>
+      </Container>
     </>
   );
 }

@@ -1,16 +1,21 @@
 import React, { useState } from 'react';
+import { ListGroup } from 'react-bootstrap';
 
 function TodoList(props) {
   return (
-    <ul>
+    <ListGroup>
       {props.list.map(item => (
-        <li className={`complete-${item.complete.toString()}`} key={item._id}>
+        <ListGroup.Item
+          action
+          variant={item.complete ? 'success' : 'danger'}
+          key={item._id}
+        >
           <span onClick={() => props.handleComplete(item._id)}>
             {item.text}
           </span>
-        </li>
+        </ListGroup.Item>
       ))}
-    </ul>
+    </ListGroup>
   );
 }
 
