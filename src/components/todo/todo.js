@@ -1,37 +1,14 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import TodoForm from './form.js';
 import TodoList from './list.js';
 
 import './todo.scss';
 
-class ToDo extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      list: [],
-    };
-  }
+function ToDo(props) {
+  const [list, setList] = useState([]);
 
-  addItem = item => {
-    item._id = Math.random();
-    item.complete = false;
-    this.setState({ list: [...this.state.list, item] });
-  };
-
-  toggleComplete = id => {
-    let item = this.state.list.filter(i => i._id === id)[0] || {};
-
-    if (item._id) {
-      item.complete = !item.complete;
-      let list = this.state.list.map(listItem =>
-        listItem._id === item._id ? item : listItem
-      );
-      this.setState({ list });
-    }
-  };
-
-  componentDidMount() {
-    let list = [
+  useEffect(() => {
+    let defaultList = [
       {
         _id: 1,
         complete: false,
@@ -69,34 +46,52 @@ class ToDo extends React.Component {
       },
     ];
 
-    this.setState({ list });
-  }
+    setList(defaultList);
+  }, []);
 
-  render() {
-    return (
-      <>
-        <header>
-          <h2>
-            There are {this.state.list.filter(item => !item.complete).length}{' '}
-            Items To Complete
-          </h2>
-        </header>
+  useEffect(() => {
+    let listLength = list.filter(item => !item.complete).length;
+    document.title = `To Do List: ${listLength}`;
+  }, [list]);
 
-        <section className="todo">
-          <div>
-            <TodoForm handleSubmit={this.addItem} />
-          </div>
+  const addItem = item => {
+    item._id = Math.random();
+    item.complete = false;
+    setList([...list, item]);
+  };
 
-          <div>
-            <TodoList
-              list={this.state.list}
-              handleComplete={this.toggleComplete}
-            />
-          </div>
-        </section>
-      </>
-    );
-  }
+  const toggleComplete = id => {
+    let item = list.filter(i => i._id === id)[0] || {};
+
+    if (item._id) {
+      item.complete = !item.complete;
+      let checkList = list.map(listItem =>
+        listItem._id === item._id ? item : listItem
+      );
+      setList(checkList);
+    }
+  };
+
+  return (
+    <>
+      <header>
+        <h2>
+          There are {list.filter(item => !item.complete).length} Items To
+          Complete
+        </h2>
+      </header>
+
+      <section className="todo">
+        <div>
+          <TodoForm handleSubmit={addItem} />
+        </div>
+
+        <div>
+          <TodoList list={list} handleComplete={toggleComplete} />
+        </div>
+      </section>
+    </>
+  );
 }
 
 export default ToDo;
