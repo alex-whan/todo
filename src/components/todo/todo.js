@@ -6,53 +6,24 @@ import Nav from 'react-bootstrap/Nav';
 import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
-
 import './todo.scss';
+
+const axios = require('axios');
 
 function ToDo(props) {
   const [list, setList] = useState([]);
 
-  useEffect(() => {
-    let defaultList = [
-      {
-        _id: 1,
-        complete: false,
-        text: 'Clean the Kitchen',
-        difficulty: 3,
-        assignee: 'Person A',
-      },
-      {
-        _id: 2,
-        complete: false,
-        text: 'Do the Laundry',
-        difficulty: 2,
-        assignee: 'Person A',
-      },
-      {
-        _id: 3,
-        complete: false,
-        text: 'Walk the Dog',
-        difficulty: 4,
-        assignee: 'Person B',
-      },
-      {
-        _id: 4,
-        complete: true,
-        text: 'Do Homework',
-        difficulty: 3,
-        assignee: 'Person C',
-      },
-      {
-        _id: 5,
-        complete: false,
-        text: 'Take a Nap',
-        difficulty: 1,
-        assignee: 'Person B',
-      },
-    ];
-
-    setList(defaultList);
+  useEffect(async () => {
+    const response = await axios.get('http://localhost:3001/api/v1/todos'); // could pull this to a .env later - just get it working and go from there
+    setList(response.data.results);
   }, []);
+
+  // Like componentDidMount
+  // get it to work here and THEN go to Custom Hooks
+  // Also, use the "useForm" custom hook and "useAJAX" hook
+  // The DEMO shows "everything you need for the lab plus a few other extra features"
+  // Need to require AXIOS and CORS
+  // Pending/Complete items in Bootstrap is probably called a "pill"
 
   useEffect(() => {
     let listLength = list.filter(item => !item.complete).length;
