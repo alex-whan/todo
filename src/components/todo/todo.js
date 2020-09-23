@@ -7,13 +7,16 @@ import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import './todo.scss';
-
-const axios = require('axios');
+import axios from 'axios';
+import useAjax from './hooks/ajax';
 
 const apiURL = 'http://localhost:3001/api/v1/todos';
 
 function ToDo(props) {
-  const [list, setList] = useState([]);
+  // const { list, setList, isLoading, setIsLoading } = useAjax(apiURL);
+  const { list, setList } = useAjax(apiURL);
+
+  // const [list, setList] = useState([]);
 
   // Check out "warning" about calling an async function directly inside of a useEffect
   useEffect(async () => {
