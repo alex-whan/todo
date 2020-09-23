@@ -10,14 +10,14 @@ import './todo.scss';
 
 const axios = require('axios');
 
-const url = 'http://localhost:3001/api/v1/todos';
+const apiURL = 'http://localhost:3001/api/v1/todos';
 
 function ToDo(props) {
   const [list, setList] = useState([]);
 
   // Check out "warning" about calling an async function directly inside of a useEffect
   useEffect(async () => {
-    const response = await axios.get(url); // could pull this to a .env later - just get it working and go from there
+    const response = await axios.get(apiURL); // could pull this to a .env later - just get it working and go from there
     setList(response.data.results);
   }, []);
 
@@ -46,33 +46,50 @@ function ToDo(props) {
       complete: item.complete,
     };
 
-    await axios.post(url, req);
+    await axios.post(apiURL, req);
   };
 
-  const toggleComplete = id => {
+  const toggleComplete = async id => {
     let item = list.filter(i => i._id === id)[0] || {};
 
     if (item._id) {
       item.complete = !item.complete;
+
+      let url = `${apiURL}/${id}`;
+
+      const req = {
+        id: item._id,
+        complete: item.complete,
+      };
+
+      await axios.patch(url, req);
+
       let checkList = list.map(listItem =>
         listItem._id === item._id ? item : listItem
       );
 
       setList(checkList);
-
-      const req = {
-        id: item._id,
-        text: item.text,
-        assignee: item.assignee,
-        difficulty: item.difficulty,
-        complete: item.complete,
-      };
-
-      console.log('MY REQ??', req);
-
-      // could also probably do a PATCH to save code in the request
-      axios.put(url, req);
     }
+  };
+
+  const deleteItem = async id => {
+    let item = list.filter(i => i._id === id)[0] || {};
+    let url = `${apiURL}/${id}`;
+
+    // const req = {
+    //   id: item._id,
+    // };
+
+    // How can I get this to refresh on delete? useEffect?
+
+    await axios.delete(url);
+    // console.log('ITEM TO DELETE:', url, req);
+
+    // let checkList = list.map(listItem =>
+    //   listItem._id === item._id ? item : listItem
+    // );
+
+    // setList(checkList);
   };
 
   // It's common to put the entire "main" part of your site in a component called "container" (in 'Layout' section of docs)
@@ -112,7 +129,11 @@ function ToDo(props) {
           </Col>
           <Col md={8}>
             <div>
-              <TodoList list={list} handleComplete={toggleComplete} />
+              <TodoList
+                list={list}
+                handleComplete={toggleComplete}
+                handleDelete={deleteItem}
+              />
             </div>
           </Col>
         </Row>
