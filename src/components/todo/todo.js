@@ -10,11 +10,14 @@ import './todo.scss';
 
 const axios = require('axios');
 
+const url = 'http://localhost:3001/api/v1/todos';
+
 function ToDo(props) {
   const [list, setList] = useState([]);
 
+  // Check out "warning" about calling an async function directly inside of a useEffect
   useEffect(async () => {
-    const response = await axios.get('http://localhost:3001/api/v1/todos'); // could pull this to a .env later - just get it working and go from there
+    const response = await axios.get(url); // could pull this to a .env later - just get it working and go from there
     setList(response.data.results);
   }, []);
 
@@ -30,10 +33,20 @@ function ToDo(props) {
     document.title = `To Do List: ${listLength}`;
   }, [list]);
 
-  const addItem = item => {
+  const addItem = async item => {
     item._id = Math.random();
     item.complete = false;
     setList([...list, item]);
+
+    const req = {
+      id: item._id,
+      text: item.text,
+      assignee: item.assignee,
+      difficulty: item.difficulty,
+      complete: item.complete,
+    };
+
+    await axios.post(url, req);
   };
 
   const toggleComplete = id => {
@@ -44,7 +57,21 @@ function ToDo(props) {
       let checkList = list.map(listItem =>
         listItem._id === item._id ? item : listItem
       );
+
       setList(checkList);
+
+      const req = {
+        id: item._id,
+        text: item.text,
+        assignee: item.assignee,
+        difficulty: item.difficulty,
+        complete: item.complete,
+      };
+
+      console.log('MY REQ??', req);
+
+      // could also probably do a PATCH to save code in the request
+      axios.put(url, req);
     }
   };
 
