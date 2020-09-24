@@ -8,7 +8,6 @@ function TodoForm(props) {
   const [handleSubmit, handleInputChange] = useForm(submitForm);
 
   function submitForm(task) {
-    console.log('TASK???', task);
     props.handleSubmit(task);
   }
 
