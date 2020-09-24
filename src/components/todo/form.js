@@ -1,30 +1,16 @@
-import React, { useState } from 'react';
+import React from 'react';
 import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
 import Card from 'react-bootstrap/Card';
 import useForm from './hooks/formHook';
 
 function TodoForm(props) {
-  // const [item, setItem] = useState({});
-  // const [handleSubmit, handleChange] = useForm(submitForm);
+  const [handleSubmit, handleInputChange] = useForm(submitForm);
 
-  // const handleInputChange = e => {
-  //   setItem({ ...item, [e.target.name]: e.target.value });
-  // };
-
-  // const handleSubmit = e => {
-  //   e.preventDefault();
-  //   e.target.reset();
-  //   props.handleSubmit(item);
-  //   setItem({});
-  // };
-
-  const submitForm = task => {
-    props.handleSubmit(task);
+  function submitForm(task) {
     console.log('TASK???', task);
-  };
-
-  const [handleSubmit, handleChange] = useForm(submitForm);
+    props.handleSubmit(task);
+  }
 
   return (
     <Card>
@@ -36,7 +22,7 @@ function TodoForm(props) {
               type="text"
               name="text"
               placeholder="Item Details"
-              onChange={handleChange}
+              onChange={handleInputChange}
             />
           </Form.Group>
 
@@ -46,7 +32,7 @@ function TodoForm(props) {
               type="text"
               name="assignee"
               placeholder="Assignee Name"
-              onChange={handleChange}
+              onChange={handleInputChange}
             />
           </Form.Group>
 
@@ -57,7 +43,7 @@ function TodoForm(props) {
               name="difficulty"
               min={0}
               max={10}
-              onChange={handleChange}
+              onChange={handleInputChange}
             />
           </Form.Group>
 
