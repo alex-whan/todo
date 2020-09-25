@@ -1,6 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import TodoForm from './form.js';
-import TodoList from './list.js';
+import React, { useEffect, useState, useCallback } from 'react';
+
 import Navbar from 'react-bootstrap/Navbar';
 import Nav from 'react-bootstrap/Nav';
 import Container from 'react-bootstrap/Container';
@@ -9,77 +8,77 @@ import Col from 'react-bootstrap/Col';
 
 import './todo.scss';
 
-function ToDo(props) {
+import TodoForm from './form.js';
+import TodoList from './list.js';
+
+import useAjax from './hooks/ajax';
+
+// const apiURL = process.env.REACT_APP_API;
+// const apiURL = 'https://api-js401.herokuapp.com';
+const apiURL = 'http://localhost:3001';
+
+function ToDo() {
+  const { request, response } = useAjax();
   const [list, setList] = useState([]);
 
-  useEffect(() => {
-    let defaultList = [
-      {
-        _id: 1,
-        complete: false,
-        text: 'Clean the Kitchen',
-        difficulty: 3,
-        assignee: 'Person A',
-      },
-      {
-        _id: 2,
-        complete: false,
-        text: 'Do the Laundry',
-        difficulty: 2,
-        assignee: 'Person A',
-      },
-      {
-        _id: 3,
-        complete: false,
-        text: 'Walk the Dog',
-        difficulty: 4,
-        assignee: 'Person B',
-      },
-      {
-        _id: 4,
-        complete: true,
-        text: 'Do Homework',
-        difficulty: 3,
-        assignee: 'Person C',
-      },
-      {
-        _id: 5,
-        complete: false,
-        text: 'Take a Nap',
-        difficulty: 1,
-        assignee: 'Person B',
-      },
-    ];
+  const addItem = async item => {
+    const options = {
+      method: 'post',
+      url: `${apiURL}/api/v1/todos`,
+      data: item,
+    };
 
-    setList(defaultList);
-  }, []);
-
-  useEffect(() => {
-    let listLength = list.filter(item => !item.complete).length;
-    document.title = `To Do List: ${listLength}`;
-  }, [list]);
-
-  const addItem = item => {
-    item._id = Math.random();
-    item.complete = false;
-    setList([...list, item]);
+    request(options); // imported from useAjax hook
   };
 
-  const toggleComplete = id => {
-    let item = list.filter(i => i._id === id)[0] || {};
+  const toggleComplete = async id => {
+    const item = list.filter(i => i._id === id)[0] || {};
 
     if (item._id) {
-      item.complete = !item.complete;
-      let checkList = list.map(listItem =>
-        listItem._id === item._id ? item : listItem
-      );
-      setList(checkList);
+      const options = {
+        method: 'put',
+        url: `${apiURL}/api/v1/todos/${id}`,
+        data: { complete: !item.complete },
+      };
+
+      request(options);
     }
   };
 
-  // It's common to put the entire "main" part of your site in a component called "container" (in 'Layout' section of docs)
-  // These fit into a GRID SYSTEM (and Bootstrap even links to CSS-Tricks flexbox) - i.e. will use Rows and Columns
-  // CONTAINERS are meant to be populated with ROWS, and ROWS are meant to be populated with COLUMNS
+  const deleteItem = async id => {
+    const options = {
+      method: 'delete',
+      url: `${apiURL}/api/v1/todos/${id}`,
+    };
+    request(options);
+  };
+
+  const getToDoList = useCallback(async () => {
+    const options = {
+      method: 'get',
+      url: `${apiURL}/api/v1/todos`,
+    };
+    request(options);
+  }, [request]);
+
+  // This runs every time the "response" object changes - can redraw or re-fetch the list depending on new data
+  useEffect(() => {
+    if (response.results) {
+      response.results && setList(response.results);
+    } else {
+      getToDoList();
+    }
+  }, [response, getToDoList, setList]);
+
+  useEffect(() => {
+    let incompleteListLength = list.filter(item => !item.complete).length;
+    document.title = `To Do List: ${incompleteListLength}`;
+  }, [list]); // can we get rid of the [list]?
+
+  // Runs on app load/mounting
+  useEffect(() => {
+    getToDoList();
+  }, [getToDoList]);
 
   return (
     <>
@@ -114,7 +113,11 @@ function ToDo(props) {
           </Col>
           <Col md={8}>
             <div>
-              <TodoList list={list} handleComplete={toggleComplete} />
+              <TodoList
+                list={list}
+                handleComplete={toggleComplete}
+                handleDelete={deleteItem}
+              />
             </div>
           </Col>
         </Row>

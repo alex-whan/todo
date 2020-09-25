@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { ListGroup } from 'react-bootstrap';
 
 function TodoList(props) {
@@ -13,6 +13,7 @@ function TodoList(props) {
           <span onClick={() => props.handleComplete(item._id)}>
             {item.text}
           </span>
+          <span onClick={() => props.handleDelete(item._id)}>X</span>
         </ListGroup.Item>
       ))}
     </ListGroup>
