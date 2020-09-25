@@ -5,11 +5,7 @@ import Card from 'react-bootstrap/Card';
 import useForm from './hooks/formHook';
 
 function TodoForm(props) {
-  const [handleSubmit, handleInputChange] = useForm(submitForm);
-
-  function submitForm(task) {
-    props.handleSubmit(task);
-  }
+  const { handleSubmit, handleInputChange } = useForm(props.handleSubmit);
 
   return (
     <Card>
@@ -40,6 +36,7 @@ function TodoForm(props) {
             <Form.Control
               type="range"
               name="difficulty"
+              defaultValue={5}
               min={0}
               max={10}
               onChange={handleInputChange}

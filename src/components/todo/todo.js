@@ -1,70 +1,83 @@
-import React, { useEffect } from 'react';
-import TodoForm from './form.js';
-import TodoList from './list.js';
+import React, { useEffect, useState, useCallback } from 'react';
+
 import Navbar from 'react-bootstrap/Navbar';
 import Nav from 'react-bootstrap/Nav';
 import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
+
 import './todo.scss';
-import axios from 'axios';
+
+import TodoForm from './form.js';
+import TodoList from './list.js';
+
 import useAjax from './hooks/ajax';
 
-const apiURL = 'http://localhost:3001/api/v1/todos';
+// const apiURL = process.env.REACT_APP_API;
+const apiURL = 'https://api-js401.herokuapp.com';
 
-function ToDo(props) {
-  const { list, setList } = useAjax(apiURL);
-
-  useEffect(() => {
-    let listLength = list.filter(item => !item.complete).length;
-    document.title = `To Do List: ${listLength}`;
-  }, [list]);
+function ToDo() {
+  const { request, response } = useAjax();
+  const [list, setList] = useState([]);
 
   const addItem = async item => {
-    item._id = Math.random();
-    item.complete = false;
-    setList([...list, item]);
-
-    const req = {
-      id: item._id,
-      text: item.text,
-      assignee: item.assignee,
-      difficulty: item.difficulty,
-      complete: item.complete,
+    const options = {
+      method: 'post',
+      url: `${apiURL}/api/v1/todo`,
+      data: item,
     };
 
-    await axios.post(apiURL, req);
+    request(options); // imported from useAjax hook
   };
 
   const toggleComplete = async id => {
-    let item = list.filter(i => i._id === id)[0] || {};
+    const item = list.filter(i => i._id === id)[0] || {};
 
     if (item._id) {
-      item.complete = !item.complete;
-
-      let url = `${apiURL}/${id}`;
-
-      const req = {
-        id: item._id,
-        complete: item.complete,
+      const options = {
+        method: 'put',
+        url: `${apiURL}/api/v1/todo/${id}`,
+        data: { complete: !item.complete },
       };
 
-      await axios.patch(url, req);
-
-      let checkList = list.map(listItem =>
-        listItem._id === item._id ? item : listItem
-      );
-
-      setList(checkList);
+      request(options);
     }
   };
 
   const deleteItem = async id => {
-    // let item = list.filter(i => i._id === id)[0] || {};
-    let url = `${apiURL}/${id}`;
-
-    await axios.delete(url);
+    const options = {
+      method: 'delete',
+      url: `${apiURL}/api/v1/todo/${id}`,
+    };
+    request(options);
   };
+
+  const getToDoList = useCallback(async () => {
+    const options = {
+      method: 'get',
+      url: `${apiURL}/api/v1/todo`,
+    };
+    request(options);
+  }, [request]);
+
+  // This runs every time the "response" object changes - can redraw or re-fetch the list depending on new data
+  useEffect(() => {
+    if (response.results) {
+      response.results && setList(response.results);
+    } else {
+      getToDoList();
+    }
+  }, [response, getToDoList, setList]);
+
+  useEffect(() => {
+    let incompleteListLength = list.filter(item => !item.complete).length;
+    document.title = `To Do List: ${incompleteListLength}`;
+  }, [list]); // can we get rid of the [list]?
+
+  // Runs on app load/mounting
+  useEffect(() => {
+    getToDoList();
+  }, [getToDoList]);
 
   return (
     <>

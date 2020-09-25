@@ -1,23 +1,23 @@
 import { useState } from 'react';
 
 const useForm = callback => {
-  const [item, setItem] = useState({});
+  const [values, setValues] = useState({});
 
   const handleSubmit = e => {
     if (e) {
       e.preventDefault();
     }
     e.target.reset();
-    callback(item);
-    setItem({});
+    callback(values);
+    // setValues({});
   };
 
   const handleInputChange = e => {
     e.persist();
-    setItem({ ...item, [e.target.name]: e.target.value });
+    setValues(values => ({ ...values, [e.target.name]: e.target.value }));
   };
 
-  return [handleSubmit, handleInputChange, item];
+  return { handleSubmit, handleInputChange, values };
 };
 
 export default useForm;
