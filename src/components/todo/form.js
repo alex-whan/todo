@@ -8,9 +8,9 @@ function TodoForm(props) {
   const { handleSubmit, handleInputChange } = useForm(props.handleSubmit);
 
   return (
-    <Card>
-      <Card.Body>
-        <Form onSubmit={handleSubmit}>
+    <Form onSubmit={handleSubmit}>
+      <Card>
+        <Card.Body>
           <Form.Group controlId="formToDoItem">
             <Form.Label>To Do Item</Form.Label>
             <Form.Control
@@ -46,9 +46,9 @@ function TodoForm(props) {
           <Button variant="primary" type="submit">
             Submit
           </Button>
-        </Form>
-      </Card.Body>
-    </Card>
+        </Card.Body>
+      </Card>
+    </Form>
   );
 }
 
