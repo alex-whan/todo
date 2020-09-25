@@ -14,7 +14,8 @@ import TodoList from './list.js';
 import useAjax from './hooks/ajax';
 
 // const apiURL = process.env.REACT_APP_API;
-const apiURL = 'https://api-js401.herokuapp.com';
+// const apiURL = 'https://api-js401.herokuapp.com';
+const apiURL = 'http://localhost:3001';
 
 function ToDo() {
   const { request, response } = useAjax();
@@ -23,7 +24,7 @@ function ToDo() {
   const addItem = async item => {
     const options = {
       method: 'post',
-      url: `${apiURL}/api/v1/todo`,
+      url: `${apiURL}/api/v1/todos`,
       data: item,
     };
 
@@ -36,7 +37,7 @@ function ToDo() {
     if (item._id) {
       const options = {
         method: 'put',
-        url: `${apiURL}/api/v1/todo/${id}`,
+        url: `${apiURL}/api/v1/todos/${id}`,
         data: { complete: !item.complete },
       };
 
@@ -47,7 +48,7 @@ function ToDo() {
   const deleteItem = async id => {
     const options = {
       method: 'delete',
-      url: `${apiURL}/api/v1/todo/${id}`,
+      url: `${apiURL}/api/v1/todos/${id}`,
     };
     request(options);
   };
@@ -55,7 +56,7 @@ function ToDo() {
   const getToDoList = useCallback(async () => {
     const options = {
       method: 'get',
-      url: `${apiURL}/api/v1/todo`,
+      url: `${apiURL}/api/v1/todos`,
     };
     request(options);
   }, [request]);
