@@ -27,7 +27,6 @@ function ToDo() {
       url: `${apiURL}/api/v1/todos`,
       data: item,
     };
-
     request(options); // imported from useAjax hook
   };
 
@@ -40,7 +39,6 @@ function ToDo() {
         url: `${apiURL}/api/v1/todos/${id}`,
         data: { complete: !item.complete },
       };
-
       request(options);
     }
   };
