@@ -40,34 +40,32 @@ const TodoList = props => {
 
   return (
     <>
-      <ListGroup>
-        {displayList.map(item => (
-          <Toast
-            key={item._id}
-            style={styles.toast}
-            onClose={() => props.handleDelete(item._id)}
-          >
-            <Toast.Header closeButton>
-              <Badge
-                pill
-                style={styles.pill}
-                variant={item.complete ? 'success' : 'danger'}
-                onClick={() => props.handleComplete(item._id)}
-              >
-                {item.complete ? 'Complete' : 'Pending'}
-              </Badge>
-              <strong className="mr-auto">{item.assignee}</strong>
-            </Toast.Header>
-            <Toast.Body>
-              {item.text}
+      {displayList.map(item => (
+        <Toast
+          key={item._id}
+          style={styles.toast}
+          onClose={() => props.handleDelete(item._id)}
+        >
+          <Toast.Header closeButton>
+            <Badge
+              pill
+              style={styles.pill}
+              variant={item.complete ? 'success' : 'danger'}
+              onClick={() => props.handleComplete(item._id)}
+            >
+              {item.complete ? 'Complete' : 'Pending'}
+            </Badge>
+            <strong className="mr-auto">{item.assignee}</strong>
+          </Toast.Header>
+          <Toast.Body>
+            {item.text}
 
-              <small style={styles.difficulty}>
-                Difficulty: {item.difficulty}
-              </small>
-            </Toast.Body>
-          </Toast>
-        ))}
-      </ListGroup>
+            <small style={styles.difficulty}>
+              Difficulty: {item.difficulty}
+            </small>
+          </Toast.Body>
+        </Toast>
+      ))}
 
       <Pagination>
         {pages.map((n, i) => (
